@@ -11,6 +11,7 @@ Plugin 'ycm-core/youcompleteme'
 Plugin 'raimondi/delimitmate'
 Plugin 'taglist.vim'
 Plugin 'lervag/vimtex'
+Plugin 'itspriddle/vim-shellcheck'
 
 call vundle#end()
 filetype plugin indent on
