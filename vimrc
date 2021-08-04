@@ -12,38 +12,68 @@ Plugin 'raimondi/delimitmate'
 Plugin 'taglist.vim'
 Plugin 'lervag/vimtex'
 Plugin 'itspriddle/vim-shellcheck'
+Plugin 'SirVer/ultisnips'
+Plugin 'honza/vim-snippets'
+Plugin 'sheerun/vim-polyglot'
+Plugin 'sainnhe/edge'
 
 call vundle#end()
 filetype plugin indent on
+
+packadd! termdebug
 
 syntax on
 set number
 set norelativenumber
 set splitright
 set splitbelow
+set foldmethod=syntax
+set noshowmode
+set mouse=a
 
+autocmd BufRead * normal zR
+autocmd ColorScheme * source ~/.vim/vimtermcolors
 
-set background=dark
+let &t_ut=''
+
+let g:termBackgroundColor = substitute(system('echo $(kitty @get-colors background | grep -P "^background" | cut -d "#" -f2)'), '\n', '', 'g')
+autocmd VimLeavePre * exec 'call Set_term_bg("'. g:termBackgroundColor .'")'
+
+function Set_term_bg(color)
+	silent exec "!set_term_bg '\\\#" . a:color . "'"
+	redraw!
+endfunction
+
 set termguicolors
 
-colo dankneon
+if !(exists('g:colors_name'))
+	colo dankneon
+	hi SignColumn guibg=NONE guifg=white
 
-source ~/.vim/vimtermcolors
+	hi GitGutterChange	guifg=#ff9900 guibg=NONE
+	hi GitGutterAdd		guifg=#20ff20 guibg=NONE
+	hi GitGutterDelete	guifg=#ff0000 guibg=NONE
+
+	hi Pmenu guibg=#3f3f4d
+
+	hi YcmWarningLine guibg=#000000
+	hi YcmWarningSection guibg=#454545
+endif
+
+let g:nightflyTransparent = 1
+let g:edge_transparent_background = 1
+let g:edge_show_eob = 1
+let g:edge_diagnostic_edge_highlight = 1
+let g:edge_disable_italic_comment = 1
 
 let g:gitgutter_sign_allow_clobber = 1
-hi SignColumn guibg=NONE guifg=white
-
-hi GitGutterChange	guifg=#ff9900 guibg=NONE
-hi GitGutterAdd		guifg=#20ff20 guibg=NONE
-hi GitGutterDelete	guifg=#ff0000 guibg=NONE
-
-hi Pmenu guibg=#3f3f4d
-
-hi YcmWarningLine guibg=#000000
-hi YcmWarningSection guibg=#454545
+let g:termdebug_wide = 1
 
 let g:ycm_autoclose_preview_window_after_insertion = 1
 let g:ycm_autoclose_preview_window_after_completion = 1
+
+let g:UltiSnipsExpandTrigger="<c-l>"
+let g:UltiSnipsListSnippets="<c-k>"
 
 let g:mapleader = "\<Space>"
 
@@ -68,7 +98,19 @@ nmap <leader>D <plug>(YCMHover)
 
 set laststatus=2
 let g:lightline = {
-	\ 'colorscheme': 'one',
+	\ 'colorscheme': 'edge',
+	\ 'active': {
+	\ 	'left': [ 
+	\   	[ 'mode', 'paste' ],
+	\ 		[ 'gitbranch', 'readonly', 'filename', 'modified', 'buffernumber' ]
+	\ 	]
+	\ },
+	\ 'component': {
+	\		'buffernumber': '%n'
+	\	},
+	\ 'component_function': {
+	\ 	'gitbranch': 'FugitiveHead'
+	\ }
 	\ }
 
 source ~/.vim/visual-at.vim
